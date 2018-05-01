@@ -53,7 +53,7 @@ fn is_fp_arith(pos: &mut FuncCursor, inst: Inst) -> bool {
                 false
             }
         },
-        _ => unimplemented!(),
+        _ => unimplemented!(), // FIXUP: Return false in this case?
     }
 }
 
