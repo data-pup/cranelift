@@ -25,12 +25,36 @@ pub fn _do_canonicalize_nans(func: &mut Function) {
 /// Returns true/false based on whether the instruction is a floating-point
 /// arithmetic operation.
 fn is_fp_arith(pos: &mut FuncCursor, inst: Inst) -> bool {
-    let data: &InstructionData = &pos.func.dfg[inst];
-    let opcode: Opcode = data.opcode();
-    match opcode {
+    match pos.func.dfg[inst] {
+        InstructionData::Unary { opcode, .. } => {
+            if opcode == Opcode::Sqrt {
+                true
+            } else {
+                false
+            }
+        },
+        InstructionData::Binary { opcode, .. } => {
+            if opcode == Opcode::Fadd
+            || opcode == Opcode::Fsub
+            || opcode == Opcode::Fmul
+            || opcode == Opcode::Fdiv
+            || opcode == Opcode::Fmin
+            || opcode == Opcode::Fmax
+            {
+                true
+            } else {
+                false
+            }
+        },
+        InstructionData::Ternary { opcode, .. } => {
+            if opcode == Opcode::Fma {
+                true
+            } else {
+                false
+            }
+        },
         _ => unimplemented!(),
     }
-    unimplemented!();
 }
 
 /// Patch instructions that may result in a NaN result with operations to
