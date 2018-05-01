@@ -14,9 +14,9 @@ pub fn _do_canonicalize_nans(func: &mut Function) {
         while let Some(inst) = pos.next_inst() {
             // Determine if `inst` is a floating-point arithmetic operation.
             if is_fp_arith(&mut pos, inst) {
-                unimplemented!();
+                add_nan_canon_instrs(&mut pos);
             } else {
-                unimplemented!();
+                unimplemented!(); // FIXUP: Do nothing if not fp arithmetic?
             }
         }
     }
@@ -30,5 +30,11 @@ fn is_fp_arith(pos: &mut FuncCursor, inst: Inst) -> bool {
     match opcode {
         _ => unimplemented!(),
     }
+    unimplemented!();
+}
+
+/// Patch instructions that may result in a NaN result with operations to
+/// identify and replace NaN's with a single canonical NaN value.
+fn add_nan_canon_instrs(pos: &mut FuncCursor) {
     unimplemented!();
 }
