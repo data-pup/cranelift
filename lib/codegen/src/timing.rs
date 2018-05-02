@@ -74,7 +74,7 @@ define_passes!{
     binemit: "Binary machine code emission",
     layout_renumber: "Layout full renumbering",
 
-    canonicalize_nans: "Canonicalization of NaN's",
+    canonicalize_nans: "Canonicalization of NaNs",
 }
 
 impl Pass {
