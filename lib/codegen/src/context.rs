@@ -125,7 +125,7 @@ impl Context {
         if isa.flags().opt_level() != OptLevel::Fastest {
             self.preopt(isa)?;
         }
-        if isa.flags().enable_nan_canonicalization {
+        if isa.flags().enable_nan_canonicalization() {
             self.canonicalize_nans(isa)?;
         }
         self.legalize(isa)?;

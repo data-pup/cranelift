@@ -4,11 +4,10 @@
 //! result of an instruction was in fact a NaN.
 
 use cursor::{Cursor, FuncCursor};
-use ir::{DataFlowGraph, Function, Inst, InstBuilder, InstructionData, Opcode, Value};
+use ir::{Function, Inst, InstBuilder, InstructionData, Opcode, Value};
 use ir::condcodes::FloatCC;
 use ir::immediates::{Ieee32, Ieee64};
 use ir::types;
-use ir::types::Type;
 use timing;
 
 // Canonical 32-bit and 64-bit NaN values.
@@ -77,7 +76,8 @@ fn add_nan_canon_instrs(pos: &mut FuncCursor, inst: Inst) {
 /// Insert the canonical 32-bit or 64-bit NaN constant value at the current
 /// position.
 fn insert_nan_const(pos: &mut FuncCursor, inst: Inst) {
-    match get_nan_type(&pos.func.dfg, inst) {
+    let res_type = pos.func.dfg.value_type(pos.func.dfg.first_result(inst));
+    match res_type {
         types::F32 => {
             let canon_nan = Ieee32::with_bits(CANON_32BIT_NAN);
             pos.ins().f32const(canon_nan);
@@ -87,24 +87,5 @@ fn insert_nan_const(pos: &mut FuncCursor, inst: Inst) {
             pos.ins().f64const(canon_nan);
         }
         _ => {} // FIXUP: Should this panic or throw some sort of Error?
-    }
-}
-
-/// Given some instruction that could potentially return a nondeterministic
-/// NaN value, determine if the operation is using 32-bit or 64-bit floating
-/// point numbers, and return the corresponding NaN value.
-fn get_nan_type(dfg: &DataFlowGraph, inst: Inst) -> Type {
-    let inst_data: &InstructionData = &dfg[inst];
-    match *inst_data {
-        InstructionData::Unary { arg, .. } => dfg.value_type(arg),
-        InstructionData::Binary { args, .. } => {
-            let lhs_operand = args[0];
-            dfg.value_type(lhs_operand)
-        }
-        InstructionData::Ternary { args, .. } => {
-            let lhs_operand = args[0];
-            dfg.value_type(lhs_operand)
-        }
-        _ => unimplemented!(), // FIXUP: What should we do in this case? Panic?
     }
 }
