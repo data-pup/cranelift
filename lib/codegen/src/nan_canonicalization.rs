@@ -53,18 +53,21 @@ fn is_fp_arith(pos: &mut FuncCursor, inst: Inst) -> bool {
 fn add_nan_canon_instrs(pos: &mut FuncCursor, inst: Inst) {
     // Select the result of the instruction, move to the next instruction.
     let inst_res: Value = pos.func.dfg.first_result(inst);
-    let next_inst: Inst = pos.next_inst().unwrap();
+
+    let next_inst: Inst = pos.next_inst().expect("EBB missing terminator!");
 
     // Insert a comparison function, and a canonical NaN constant. Select
     // the constant value, and move forward to the next instruction.
     let is_nan: Value = pos.ins().fcmp(FloatCC::NotEqual, inst_res, inst_res);
     insert_nan_const(pos, inst);
-    let canon_nan_instr: Inst = pos.prev_inst().unwrap();
-    let canon_nan_res: Value = pos.func.dfg.first_result(canon_nan_instr);
+    let canon_nan_instr: Inst = pos.prev_inst().expect(
+        "Could not find NaN constant definition!",
+    );
+    let canon_nan_val: Value = pos.func.dfg.first_result(canon_nan_instr);
     pos.goto_inst(next_inst);
 
     // Insert a select instruction to canonicalize the NaN value.
-    pos.ins().select(is_nan, canon_nan_res, inst_res);
+    pos.ins().select(is_nan, canon_nan_val, inst_res);
 
     // Move backwards one instruction, so that the loop in the
     // `do_nan_canonicalization` function does not skip any instructions.
