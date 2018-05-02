@@ -8,6 +8,10 @@ use ir::types::Type;
 // use ir::types::{F32, F64, Type};
 use timing;
 
+static CANON_32BIT_NAN: u32 = 0b01111111100000000000000000000001;
+static CANON_64BIT_NAN: u64 =
+    0b0111111111110000000000000000000000000000000000000000000000000001;
+
 /// Performs the NaN-canonicalization pass by identifying floating-point
 /// arithmetic operations, and adding instructions to replace the result
 /// with a canonical NaN value if the result of the operation was NaN.
@@ -102,13 +106,11 @@ fn add_nan_canon_instrs(pos: &mut FuncCursor, inst: Inst) {
     // Insert the canonical NaN constant value.
     match get_nan_type(&pos.func.dfg, inst) {
         types::F32 => {
-            let canon_nan = Ieee32::with_bits(0b01111111100000000000000000000001);
+            let canon_nan = Ieee32::with_bits(CANON_32BIT_NAN);
             pos.ins().f32const(canon_nan);
         },
         types::F64 => {
-            let canon_nan = Ieee64::with_bits(
-                0b0111111111110000000000000000000000000000000000000000000000000001
-            );
+            let canon_nan = Ieee64::with_bits(CANON_64BIT_NAN);
             pos.ins().f64const(canon_nan);
         }
         _ => unimplemented!() // Should this panic or throw some sort of Error?
