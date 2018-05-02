@@ -96,7 +96,7 @@ fn add_nan_canon_instrs(pos: &mut FuncCursor, inst: Inst) {
     // Select the operation's result, and move to the next instruction.
     // (FIXUP: Is this completely safe to unwrap? Is unwrapping even needed?)
     let inst_res: Value = pos.func.dfg.first_result(inst);
-    let _next_inst: Inst = pos.next_inst().unwrap();
+    let next_inst: Inst = pos.next_inst().unwrap();
 
     // Insert a comparison to check if the result of the instruction was NaN,
     // Select a canonical value if NaN, otherwise select the original result.
@@ -112,12 +112,16 @@ fn add_nan_canon_instrs(pos: &mut FuncCursor, inst: Inst) {
         types::F64 => {
             let canon_nan = Ieee64::with_bits(CANON_64BIT_NAN);
             pos.ins().f64const(canon_nan);
-        }
+        },
         _ => unimplemented!() // Should this panic or throw some sort of Error?
     };
 
+    let canon_nan_instr: Inst = pos.prev_inst().unwrap();
+    let canon_nan_res: Value = pos.func.dfg.first_result(canon_nan_instr);
+    pos.goto_inst(next_inst);
+
     // pos.insert_inst(canonical_nan_inst);
-    let new_res: Value = pos.ins().select(is_nan, inst_res, inst_res);
+    let new_res: Value = pos.ins().select(is_nan, canon_nan_res, inst_res);
 
     // Current State:
     // ----------------------------------------------------------------
