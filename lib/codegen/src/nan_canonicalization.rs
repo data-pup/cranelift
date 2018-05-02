@@ -4,7 +4,7 @@
 //! result of an instruction was in fact a NaN.
 
 use cursor::{Cursor, FuncCursor};
-use ir::{Function, Inst, InstBuilder, InstructionData, Opcode, Value};
+use ir::{Function, Inst, InstBuilder, InstructionData, Opcode};
 use ir::condcodes::FloatCC;
 use ir::immediates::{Ieee32, Ieee64};
 use ir::types;
@@ -52,18 +52,18 @@ fn is_fp_arith(pos: &mut FuncCursor, inst: Inst) -> bool {
 /// identify and replace NaN's with a single canonical NaN value.
 fn add_nan_canon_instrs(pos: &mut FuncCursor, inst: Inst) {
     // Select the result of the instruction, move to the next instruction.
-    let inst_res: Value = pos.func.dfg.first_result(inst);
+    let inst_res = pos.func.dfg.first_result(inst);
 
-    let next_inst: Inst = pos.next_inst().expect("EBB missing terminator!");
+    let next_inst = pos.next_inst().expect("EBB missing terminator!");
 
     // Insert a comparison function, and a canonical NaN constant. Select
     // the constant value, and move forward to the next instruction.
-    let is_nan: Value = pos.ins().fcmp(FloatCC::NotEqual, inst_res, inst_res);
+    let is_nan = pos.ins().fcmp(FloatCC::NotEqual, inst_res, inst_res);
     insert_nan_const(pos, inst);
-    let canon_nan_instr: Inst = pos.prev_inst().expect(
+    let canon_nan_instr = pos.prev_inst().expect(
         "Could not find NaN constant definition!",
     );
-    let canon_nan_val: Value = pos.func.dfg.first_result(canon_nan_instr);
+    let canon_nan_val = pos.func.dfg.first_result(canon_nan_instr);
     pos.goto_inst(next_inst);
 
     // Insert a select instruction to canonicalize the NaN value.
