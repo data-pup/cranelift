@@ -1,4 +1,7 @@
-//! A NaN-canonicalizing rewriting pass.
+//! A NaN-canonicalizing rewriting pass. For instructions that can potentially
+//! result in a nondeterministic NaN value, insert operations to check for NaN,
+//! and replace the result with a deterministic canonical NaN value if the
+//! result of an instruction was in fact a NaN.
 
 use cursor::{Cursor, FuncCursor};
 use ir::{DataFlowGraph, Function, Inst, InstBuilder, InstructionData, Opcode, Value};
@@ -6,9 +9,9 @@ use ir::condcodes::FloatCC;
 use ir::immediates::{Ieee32, Ieee64};
 use ir::types;
 use ir::types::Type;
-// use ir::types::{F32, F64, Type};
 use timing;
 
+// Canonical 32-bit and 64-bit NaN values.
 static CANON_32BIT_NAN: u32 = 0b01111111100000000000000000000001;
 static CANON_64BIT_NAN: u64 =
     0b0111111111110000000000000000000000000000000000000000000000000001;
@@ -56,18 +59,27 @@ fn is_fp_arith(pos: &mut FuncCursor, inst: Inst) -> bool {
 /// Patch instructions that may result in a NaN result with operations to
 /// identify and replace NaN's with a single canonical NaN value.
 fn add_nan_canon_instrs(pos: &mut FuncCursor, inst: Inst) {
-    // Select the operation's result, and move to the next instruction.
-    // (FIXUP: Is this completely safe to unwrap? Is unwrapping even needed?)
+    // FIXUP: Are these unwraps safe? An arithmetic operation should never be
+    // found at the end of an EBB, if I understand this correctly.
+
+    // Select the result of the instruction, move to the next instruction.
     let inst_res: Value = pos.func.dfg.first_result(inst);
     let next_inst: Inst = pos.next_inst().unwrap();
-    let is_nan: Value = pos.ins().fcmp(FloatCC::NotEqual, inst_res, inst_res);
 
+    // Insert a comparison function, and a canonical NaN constant. Select
+    // the constant value, and move forward to the next instruction.
+    let is_nan: Value = pos.ins().fcmp(FloatCC::NotEqual, inst_res, inst_res);
     insert_nan_const(pos, inst);
     let canon_nan_instr: Inst = pos.prev_inst().unwrap();
     let canon_nan_res: Value = pos.func.dfg.first_result(canon_nan_instr);
-
     pos.goto_inst(next_inst);
+
+    // Insert a select instruction to canonicalize the NaN value.
     pos.ins().select(is_nan, canon_nan_res, inst_res);
+
+    // Move backwards one instruction, so that the loop in the
+    // `do_nan_canonicalization` function does not skip any instructions.
+    pos.prev_inst();
 }
 
 /// Insert the canonical 32-bit or 64-bit NaN constant value at the current
@@ -82,7 +94,7 @@ fn insert_nan_const(pos: &mut FuncCursor, inst: Inst) {
             let canon_nan = Ieee64::with_bits(CANON_64BIT_NAN);
             pos.ins().f64const(canon_nan);
         },
-        _ => unimplemented!() // FIXUP: Should this panic or throw some sort of Error?
+        _ => {} // FIXUP: Should this panic or throw some sort of Error?
     }
 }
 
@@ -103,6 +115,6 @@ fn get_nan_type(dfg: &DataFlowGraph, inst: Inst) -> Type {
             let lhs_operand = args[0];
             dfg.value_type(lhs_operand)
         },
-        _ => unimplemented!(), // FIXUP: What would I do in this case? Error?
+        _ => unimplemented!(), // FIXUP: What should we do in this case? Panic?
     }
 }
