@@ -2,6 +2,7 @@
 
 use cursor::{Cursor, FuncCursor};
 use ir::{DataFlowGraph, Function, Inst, InstBuilder, InstructionData, Opcode, Value};
+use ir::immediates::{Ieee32, Ieee64};
 use ir::types;
 use ir::types::Type;
 // use ir::types::{F32, F64, Type};
@@ -51,11 +52,10 @@ fn is_fp_arith(pos: &mut FuncCursor, inst: Inst) -> bool {
 /// NaN value, determine if the operation is using 32-bit or 64-bit floating
 /// point numbers, and return the corresponding NaN value.
 /// FIXUP: Not sure if this is the correct prototype for this function.
-fn _get_canonical_nan(dfg: &DataFlowGraph, inst: Inst) -> Inst {
+fn get_nan_type(dfg: &DataFlowGraph, inst: Inst) -> Type {
     let inst_data: &InstructionData = &dfg[inst];
 
-    // Determine the type of the first operand.
-    let nan_type: Type = match inst_data {
+    match *inst_data {
         InstructionData::Unary { arg, .. } => {
             dfg.value_type(arg)
         },
@@ -68,16 +68,7 @@ fn _get_canonical_nan(dfg: &DataFlowGraph, inst: Inst) -> Inst {
             dfg.value_type(lhs_operand)
         },
         _ => unimplemented!(), // FIXUP: What would I do in this case? Error?
-    };
-
-    // Create a f32const or f64const depending on the type of the first operand.
-    let canonical_nan: Inst = match nan_type {
-        types::F32 => unimplemented!(),
-        types::F64 => unimplemented!(),
-        _ => unimplemented!(), // FIXUP: As above, should this return an Error?
-    };
-
-    return canonical_nan; // FIXUP: This is not idiomatic, writing out long-form for now.
+    }
 }
 
 /// Patch instructions that may result in a NaN result with operations to
@@ -107,6 +98,23 @@ fn add_nan_canon_instrs(pos: &mut FuncCursor, inst: Inst) {
     // Select a canonical value if NaN, otherwise select the original result.
     // FIXUP: How/Where to define the constant canonical value?
     let is_nan: Value = pos.ins().ffcmp(inst_res, inst_res);
+
+    // Insert the canonical NaN constant value.
+    match get_nan_type(&pos.func.dfg, inst) {
+        types::F32 => {
+            let canon_nan = Ieee32::with_bits(0b01111111100000000000000000000001);
+            pos.ins().f32const(canon_nan);
+        },
+        types::F64 => {
+            let canon_nan = Ieee64::with_bits(
+                0b0111111111110000000000000000000000000000000000000000000000000001
+            );
+            pos.ins().f64const(canon_nan);
+        }
+        _ => unimplemented!() // Should this panic or throw some sort of Error?
+    };
+
+    // pos.insert_inst(canonical_nan_inst);
     let new_res: Value = pos.ins().select(is_nan, inst_res, inst_res);
 
     // Current State:
