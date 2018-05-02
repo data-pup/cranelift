@@ -2,7 +2,9 @@
 
 use cursor::{Cursor, FuncCursor};
 use ir::{DataFlowGraph, Function, Inst, InstBuilder, InstructionData, Opcode, Value};
-use ir::types::{F32, F64};
+use ir::types;
+use ir::types::Type;
+// use ir::types::{F32, F64, Type};
 use timing;
 
 /// Performs the NaN-canonicalization pass by identifying floating-point
@@ -49,8 +51,33 @@ fn is_fp_arith(pos: &mut FuncCursor, inst: Inst) -> bool {
 /// NaN value, determine if the operation is using 32-bit or 64-bit floating
 /// point numbers, and return the corresponding NaN value.
 /// FIXUP: Not sure if this is the correct prototype for this function.
-fn _get_canonical_nan(inst: Inst, dfg: &DataFlowGraph) -> Value {
-    unimplemented!();
+fn _get_canonical_nan(dfg: &DataFlowGraph, inst: Inst) -> Inst {
+    let inst_data: &InstructionData = &dfg[inst];
+
+    // Determine the type of the first operand.
+    let nan_type: Type = match inst_data {
+        InstructionData::Unary { arg, .. } => {
+            dfg.value_type(arg)
+        },
+        InstructionData::Binary { args, .. } => {
+            let lhs_operand = args[0];
+            dfg.value_type(lhs_operand)
+        },
+        InstructionData::Ternary { args, .. } => {
+            let lhs_operand = args[0];
+            dfg.value_type(lhs_operand)
+        },
+        _ => unimplemented!(), // FIXUP: What would I do in this case? Error?
+    };
+
+    // Create a f32const or f64const depending on the type of the first operand.
+    let canonical_nan: Inst = match nan_type {
+        types::F32 => unimplemented!(),
+        types::F64 => unimplemented!(),
+        _ => unimplemented!(), // FIXUP: As above, should this return an Error?
+    };
+
+    return canonical_nan; // FIXUP: This is not idiomatic, writing out long-form for now.
 }
 
 /// Patch instructions that may result in a NaN result with operations to
@@ -99,11 +126,12 @@ fn add_nan_canon_instrs(pos: &mut FuncCursor, inst: Inst) {
     // with aliases to the results of the new instruction.
     // FIXUP: Comments for `replace_with_aliases` mention that `dest_inst` may
     // need to be removed from the graph. Does this apply in this case?
+
     // pos.func.dfg.replace_with_aliases(inst, select_inst);
     // pos.func.dfg.change_to_alias(inst_res, new_res);
 
     // Remove the original instruction after replacing the aliases.
     // pos.goto_inst(inst);
     // let _removed_inst: Inst = pos.remove_inst();
-    pos.goto_inst(select_inst);
+    // pos.goto_inst(select_inst);
 }
