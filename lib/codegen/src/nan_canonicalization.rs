@@ -1,7 +1,8 @@
 //! A NaN-canonicalizing rewriting pass.
 
 use cursor::{Cursor, FuncCursor};
-use ir::{Function, Inst, InstBuilder, InstructionData, Opcode, Value};
+use ir::{DataFlowGraph, Function, Inst, InstBuilder, InstructionData, Opcode, Value};
+use ir::types::{F32, F64};
 use timing;
 
 /// Performs the NaN-canonicalization pass by identifying floating-point
@@ -44,34 +45,50 @@ fn is_fp_arith(pos: &mut FuncCursor, inst: Inst) -> bool {
     }
 }
 
+/// Given some instruction that could potentially return a nondeterministic
+/// NaN value, determine if the operation is using 32-bit or 64-bit floating
+/// point numbers, and return the corresponding NaN value.
+/// FIXUP: Not sure if this is the correct prototype for this function.
+fn _get_canonical_nan(inst: Inst, dfg: &DataFlowGraph) -> Value {
+    unimplemented!();
+}
+
 /// Patch instructions that may result in a NaN result with operations to
 /// identify and replace NaN's with a single canonical NaN value.
 fn add_nan_canon_instrs(pos: &mut FuncCursor, inst: Inst) {
     // ----------------------------------------------------------------
-    // TODO:
     // Let x be the result to some floating point arithmetic operation.
     // Add the following instructions after `inst` : (Pseudo-code)
     // let is_nan = x != x;                          (fcmp)
     // let canonical_res = is_nan ? CANON_VALUE : x  (select)
     // ----------------------------------------------------------------
-    // FIXUP: Verbose type annotations are here purely for the sake of
-    // helping myself learn more about the Cretonne API.
+    // FIXUP: Verbose type annotations are for learning's sake.
+    // ----------------------------------------------------------------
 
-    let orig_pos: Inst = inst; // Store the original position of the cursor.
+    // Original State:
+    // ----------------------------------------------------------------
+    // x = [floating point arithmetic instruction] <-pos
+    // [next instruction]
+    // ----------------------------------------------------------------
 
-    // Select the operation's result.
-    let inst_res: Value = pos.func.dfg.first_result(orig_pos);
-
-    // Move to the next instruction.
+    // Select the operation's result, and move to the next instruction.
     // (FIXUP: Is this completely safe to unwrap? Is unwrapping even needed?)
+    let inst_res: Value = pos.func.dfg.first_result(inst);
     let _next_inst: Inst = pos.next_inst().unwrap();
 
-    // Insert a comparison to check if the result of the instruction was NaN.
-    let is_nan: Value = pos.ins().ffcmp(inst_res, inst_res);
-
-    // Select a canonical value if the result was NaN, or the original result otherwise.
+    // Insert a comparison to check if the result of the instruction was NaN,
+    // Select a canonical value if NaN, otherwise select the original result.
     // FIXUP: How/Where to define the constant canonical value?
+    let is_nan: Value = pos.ins().ffcmp(inst_res, inst_res);
     let new_res: Value = pos.ins().select(is_nan, inst_res, inst_res);
+
+    // Current State:
+    // ----------------------------------------------------------------
+    // x = [floating point arithmetic instruction]
+    // is_nan = x != x
+    // canonical_value =  is_nan ? TODO : x
+    // [next instruction]                          <-pos
+    // ----------------------------------------------------------------
 
     // Move backwards to the last instruction we inserted, so that we can
     // replace the results of the original instruction with aliases to the
@@ -80,13 +97,13 @@ fn add_nan_canon_instrs(pos: &mut FuncCursor, inst: Inst) {
 
     // Replace the results of the original floating point arithmetic operation
     // with aliases to the results of the new instruction.
-    // FIXUP: Is this backwards? I'd like to double check this.
     // FIXUP: Comments for `replace_with_aliases` mention that `dest_inst` may
     // need to be removed from the graph. Does this apply in this case?
-    pos.func.dfg.replace_with_aliases(orig_pos, select_inst); // Causes 'instruction has no results' error.
+    // pos.func.dfg.replace_with_aliases(inst, select_inst);
+    // pos.func.dfg.change_to_alias(inst_res, new_res);
 
     // Remove the original instruction after replacing the aliases.
-    pos.goto_inst(orig_pos);
-    let _removed_inst: Inst = pos.remove_inst();
+    // pos.goto_inst(inst);
+    // let _removed_inst: Inst = pos.remove_inst();
     pos.goto_inst(select_inst);
 }
