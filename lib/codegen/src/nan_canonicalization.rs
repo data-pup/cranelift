@@ -2,6 +2,7 @@
 
 use cursor::{Cursor, FuncCursor};
 use ir::{DataFlowGraph, Function, Inst, InstBuilder, InstructionData, Opcode, Value};
+use ir::condcodes::FloatCC;
 use ir::immediates::{Ieee32, Ieee64};
 use ir::types;
 use ir::types::Type;
@@ -101,7 +102,7 @@ fn add_nan_canon_instrs(pos: &mut FuncCursor, inst: Inst) {
     // Insert a comparison to check if the result of the instruction was NaN,
     // Select a canonical value if NaN, otherwise select the original result.
     // FIXUP: How/Where to define the constant canonical value?
-    let is_nan: Value = pos.ins().ffcmp(inst_res, inst_res);
+    let is_nan: Value = pos.ins().fcmp(FloatCC::NotEqual, inst_res, inst_res);
 
     // Insert the canonical NaN constant value.
     match get_nan_type(&pos.func.dfg, inst) {
