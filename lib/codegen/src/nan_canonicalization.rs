@@ -7,7 +7,7 @@ use timing;
 /// Performs the NaN-canonicalization pass by identifying floating-point
 /// arithmetic operations, and adding instructions to replace the result
 /// with a canonical NaN value if the result of the operation was NaN.
-pub fn _do_canonicalize_nans(func: &mut Function) {
+pub fn do_nan_canonicalization(func: &mut Function) {
     let _tt = timing::canonicalize_nans();
     let mut pos = FuncCursor::new(func);
     return; // FIXUP (Adding invocation to compilation context).
