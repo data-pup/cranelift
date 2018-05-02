@@ -62,8 +62,9 @@ fn add_nan_canon_instrs(pos: &mut FuncCursor, inst: Inst) {
     // Select the operation's result.
     let inst_res: Value = pos.func.dfg.first_result(orig_pos);
 
-    // Move to the next instruction. (FIXUP: Is this completely safe to unwrap?)
-    let next_inst: Inst = pos.next_inst().unwrap();
+    // Move to the next instruction.
+    // (FIXUP: Is this completely safe to unwrap? Is unwrapping even needed?)
+    let _next_inst: Inst = pos.next_inst().unwrap();
 
     // Insert a comparison to check if the result of the instruction was NaN.
     let is_nan: Value = pos.ins().ffcmp(inst_res, inst_res);
@@ -82,5 +83,10 @@ fn add_nan_canon_instrs(pos: &mut FuncCursor, inst: Inst) {
     // FIXUP: Is this backwards? I'd like to double check this.
     // FIXUP: Comments for `replace_with_aliases` mention that `dest_inst` may
     // need to be removed from the graph. Does this apply in this case?
-    // pos.func.dfg.replace_with_aliases(orig_pos, select_inst);
+    pos.func.dfg.replace_with_aliases(orig_pos, select_inst); // Causes 'instruction has no results' error.
+
+    // Remove the original instruction after replacing the aliases.
+    pos.goto_inst(orig_pos);
+    let _removed_inst: Inst = pos.remove_inst();
+    pos.goto_inst(select_inst);
 }
