@@ -10,8 +10,6 @@ use timing;
 pub fn do_nan_canonicalization(func: &mut Function) {
     let _tt = timing::canonicalize_nans();
     let mut pos = FuncCursor::new(func);
-    return; // FIXUP (Adding invocation to compilation context).
-
     while let Some(_ebb) = pos.next_ebb() {
         while let Some(inst) = pos.next_inst() {
             if is_fp_arith(&mut pos, inst) {
@@ -84,7 +82,7 @@ fn add_nan_canon_instrs(pos: &mut FuncCursor, inst: Inst) {
     // FIXUP: Is this backwards? I'd like to double check this.
     // FIXUP: Comments for `replace_with_aliases` mention that `dest_inst` may
     // need to be removed from the graph. Does this apply in this case?
-    pos.func.dfg.replace_with_aliases(orig_pos, select_inst);
+    // pos.func.dfg.replace_with_aliases(orig_pos, select_inst);
 }
 
 #[cfg(test)]
