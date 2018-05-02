@@ -8,6 +8,7 @@ use ir::{Function, Inst, InstBuilder, InstructionData, Opcode};
 use ir::condcodes::FloatCC;
 use ir::immediates::{Ieee32, Ieee64};
 use ir::types;
+use ir::types::Type;
 use timing;
 
 // Canonical 32-bit and 64-bit NaN values.
@@ -53,13 +54,13 @@ fn is_fp_arith(pos: &mut FuncCursor, inst: Inst) -> bool {
 fn add_nan_canon_instrs(pos: &mut FuncCursor, inst: Inst) {
     // Select the result of the instruction, move to the next instruction.
     let inst_res = pos.func.dfg.first_result(inst);
-
+    let nan_type = pos.func.dfg.value_type(inst_res);
     let next_inst = pos.next_inst().expect("EBB missing terminator!");
 
     // Insert a comparison function, and a canonical NaN constant. Select
     // the constant value, and move forward to the next instruction.
     let is_nan = pos.ins().fcmp(FloatCC::NotEqual, inst_res, inst_res);
-    insert_nan_const(pos, inst);
+    insert_nan_const(pos, nan_type);
     let canon_nan_instr = pos.prev_inst().expect(
         "Could not find NaN constant definition!",
     );
@@ -76,9 +77,8 @@ fn add_nan_canon_instrs(pos: &mut FuncCursor, inst: Inst) {
 
 /// Insert the canonical 32-bit or 64-bit NaN constant value at the current
 /// position.
-fn insert_nan_const(pos: &mut FuncCursor, inst: Inst) {
-    let res_type = pos.func.dfg.value_type(pos.func.dfg.first_result(inst));
-    match res_type {
+fn insert_nan_const(pos: &mut FuncCursor, nan_type: Type) {
+    match nan_type {
         types::F32 => {
             let canon_nan = Ieee32::with_bits(CANON_32BIT_NAN);
             pos.ins().f32const(canon_nan);
