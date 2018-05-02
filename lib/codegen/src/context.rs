@@ -124,8 +124,8 @@ impl Context {
         self.compute_cfg();
         if isa.flags().opt_level() != OptLevel::Fastest {
             self.preopt(isa)?;
-            self.canonicalize_nans(isa)?;
         }
+        self.canonicalize_nans(isa)?; // FIXUP: Should this be wrapped in a conditional?
         self.legalize(isa)?;
         if isa.flags().opt_level() != OptLevel::Fastest {
             self.postopt(isa)?;

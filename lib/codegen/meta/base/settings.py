@@ -91,6 +91,12 @@ enable_float = BoolSetting(
         """,
         default=True)
 
+enable_nan_canonicalization = BoolSetting(
+        """
+        Enable NaN canonicalization
+        """,
+        default=True)
+
 enable_simd = BoolSetting(
         """Enable the use of SIMD instructions.""",
         default=True)
