@@ -84,13 +84,3 @@ fn add_nan_canon_instrs(pos: &mut FuncCursor, inst: Inst) {
     // need to be removed from the graph. Does this apply in this case?
     // pos.func.dfg.replace_with_aliases(orig_pos, select_inst);
 }
-
-#[cfg(test)]
-mod tests {
-    use canonicalize_nans::*;
-
-    #[test]
-    fn is_fp_arith_works() {
-        unimplemented!();
-    }
-}
