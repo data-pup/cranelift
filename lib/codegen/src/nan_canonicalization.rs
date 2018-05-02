@@ -33,14 +33,15 @@ pub fn do_nan_canonicalization(func: &mut Function) {
 /// arithmetic operation. This ignores operations like `fneg`, `fabs`, or
 /// `fcopysign` that only operate on the sign bit of a floating point value.
 fn is_fp_arith(pos: &mut FuncCursor, inst: Inst) -> bool {
-    // FIXUP: Should `ceil`, `floor`, `trunc`, `nearest`, and
-    // immediate constants be considered as well?
     match pos.func.dfg[inst] {
-        InstructionData::Unary { opcode, .. } => opcode == Opcode::Sqrt,
+        InstructionData::Unary { opcode, .. } => {
+            opcode == Opcode::Ceil || opcode == Opcode::Floor || opcode == Opcode::Nearest ||
+                opcode == Opcode::Sqrt || opcode == Opcode::Trunc
+        }
         InstructionData::Binary { opcode, .. } => {
-            opcode == Opcode::Fadd || opcode == Opcode::Fsub || opcode == Opcode::Fmul ||
-                opcode == Opcode::Fdiv || opcode == Opcode::Fmin ||
-                opcode == Opcode::Fmax
+            opcode == Opcode::Fadd || opcode == Opcode::Fdiv || opcode == Opcode::Fmax ||
+                opcode == Opcode::Fmin || opcode == Opcode::Fmul ||
+                opcode == Opcode::Fsub
         }
         InstructionData::Ternary { opcode, .. } => opcode == Opcode::Fma,
         _ => false,
@@ -50,9 +51,6 @@ fn is_fp_arith(pos: &mut FuncCursor, inst: Inst) -> bool {
 /// Patch instructions that may result in a NaN result with operations to
 /// identify and replace NaN's with a single canonical NaN value.
 fn add_nan_canon_instrs(pos: &mut FuncCursor, inst: Inst) {
-    // FIXUP: Are these unwraps safe? An arithmetic operation should never be
-    // found at the end of an EBB, if I understand this correctly.
-
     // Select the result of the instruction, move to the next instruction.
     let inst_res: Value = pos.func.dfg.first_result(inst);
     let next_inst: Inst = pos.next_inst().unwrap();
