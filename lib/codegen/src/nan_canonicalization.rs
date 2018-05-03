@@ -52,7 +52,7 @@ fn is_fp_arith(pos: &mut FuncCursor, inst: Inst) -> bool {
 /// Patch instructions that may result in a NaN result with operations to
 /// identify and replace NaN's with a single canonical NaN value.
 fn add_nan_canon_instrs(pos: &mut FuncCursor, inst: Inst) {
-    // Select the result of the instruction, move to the next instruction.
+    // Select the instruction result, result type, step forward one instruction.
     let inst_res = pos.func.dfg.first_result(inst);
     let nan_type = pos.func.dfg.value_type(inst_res);
     let next_inst = pos.next_inst().expect("EBB missing terminator!");
@@ -65,13 +65,12 @@ fn add_nan_canon_instrs(pos: &mut FuncCursor, inst: Inst) {
         "Could not find NaN constant definition!",
     );
     let canon_nan_val = pos.func.dfg.first_result(canon_nan_instr);
+
+    // Jump to the succeeding instruction, add a select instruction that will
+    // replace the result with a canonical value if it is NaN. Then step
+    // backwards, so that the pass does not skip any instructions.
     pos.goto_inst(next_inst);
-
-    // Insert a select instruction to canonicalize the NaN value.
     pos.ins().select(is_nan, canon_nan_val, inst_res);
-
-    // Move backwards one instruction, so that the loop in the
-    // `do_nan_canonicalization` function does not skip any instructions.
     pos.prev_inst();
 }
 
