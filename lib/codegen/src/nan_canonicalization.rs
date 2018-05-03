@@ -52,15 +52,13 @@ fn is_fp_arith(pos: &mut FuncCursor, inst: Inst) -> bool {
 /// Patch instructions that may result in a NaN result with operations to
 /// identify and replace NaN's with a single canonical NaN value.
 fn add_nan_canon_instrs(pos: &mut FuncCursor, inst: Inst) {
-    // Select the instruction result, result type, step forward one instruction.
-    let inst_res = pos.func.dfg.first_result(inst);
-    let nan_type = pos.func.dfg.value_type(inst_res);
-    let _next_inst = pos.next_inst().expect("EBB missing terminator!");
+    // Select the instruction result, result type, and replace the result.
+    let val = pos.func.dfg.first_result(inst);
+    let nan_type = pos.func.dfg.value_type(val);
+    let replaced_val = pos.func.dfg.replace_result(val, nan_type);
 
-    // -------------------------------------------------------------------------
-    // FIXUP: Call `replace_result` to replace the result of `inst`.
-    // -------------------------------------------------------------------------
-    // pos.func.dfg.replace_result(old_value, new_type);
+    // Step forward one instruction.
+    let _next_inst = pos.next_inst().expect("EBB missing terminator!");
 
     // -------------------------------------------------------------------------
     // FIXUP: Call `with_result` when inserting `select`.
@@ -69,11 +67,11 @@ fn add_nan_canon_instrs(pos: &mut FuncCursor, inst: Inst) {
 
     // Insert a comparison instruction, to check if `inst_res` is NaN.
     // Note: IEEE 754 defines NaN such that it is not equal to itself.
-    let is_nan = pos.ins().fcmp(FloatCC::NotEqual, inst_res, inst_res);
+    let is_nan = pos.ins().fcmp(FloatCC::NotEqual, val, val);
     let canon_nan_val = insert_nan_const(pos, nan_type);
 
     // If the result of `inst` was NaN, select the canonical NaN value.
-    pos.ins().select(is_nan, canon_nan_val, inst_res);
+    pos.ins().with_result(val).select(is_nan, canon_nan_val, val);
     pos.prev_inst(); // Step backwards so the pass does not skip instructions.
 }
 
