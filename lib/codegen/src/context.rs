@@ -219,8 +219,7 @@ impl Context {
     /// Perform NaN canonicalizing rewrites on the function.
     pub fn canonicalize_nans(&mut self, isa: &TargetIsa) -> CtonResult {
         do_nan_canonicalization(&mut self.func);
-        self.verify_if(isa)?;
-        Ok(())
+        self.verify_if(isa)
     }
 
     /// Run the legalizer for `isa` on the function.
