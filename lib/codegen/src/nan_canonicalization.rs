@@ -4,7 +4,7 @@
 //! result of an instruction was in fact a NaN.
 
 use cursor::{Cursor, FuncCursor};
-use ir::{Function, Inst, InstBuilder, InstructionData, Opcode};
+use ir::{Function, Inst, InstBuilder, InstructionData, Opcode, Value};
 use ir::condcodes::FloatCC;
 use ir::immediates::{Ieee32, Ieee64};
 use ir::types;
@@ -55,37 +55,27 @@ fn add_nan_canon_instrs(pos: &mut FuncCursor, inst: Inst) {
     // Select the instruction result, result type, step forward one instruction.
     let inst_res = pos.func.dfg.first_result(inst);
     let nan_type = pos.func.dfg.value_type(inst_res);
-    let next_inst = pos.next_inst().expect("EBB missing terminator!");
+    let _next_inst = pos.next_inst().expect("EBB missing terminator!");
 
-    // Insert a comparison function, and a canonical NaN constant. Select
-    // the constant value, and move forward to the next instruction.
+    // Insert a comparison instruction, to check if `inst_res` is NaN.
+    // Note: IEEE 754 defines NaN such that it is not equal to itself.
     let is_nan = pos.ins().fcmp(FloatCC::NotEqual, inst_res, inst_res);
-    insert_nan_const(pos, nan_type);
-    let canon_nan_instr = pos.prev_inst().expect(
-        "Could not find NaN constant definition!",
-    );
-    let canon_nan_val = pos.func.dfg.first_result(canon_nan_instr);
+    let canon_nan_val = insert_nan_const(pos, nan_type);
 
-    // Jump to the succeeding instruction, add a select instruction that will
-    // replace the result with a canonical value if it is NaN. Then step
-    // backwards, so that the pass does not skip any instructions.
-    pos.goto_inst(next_inst);
+    // If the result of `inst` was NaN, select the canonical NaN value.
     pos.ins().select(is_nan, canon_nan_val, inst_res);
-    pos.prev_inst();
+    pos.prev_inst(); // Step backwards so the pass does not skip instructions.
 }
 
 /// Insert the canonical 32-bit or 64-bit NaN constant value at the current
 /// position.
-fn insert_nan_const(pos: &mut FuncCursor, nan_type: Type) {
+fn insert_nan_const(pos: &mut FuncCursor, nan_type: Type) -> Value {
     match nan_type {
-        types::F32 => {
-            let canon_nan = Ieee32::with_bits(CANON_32BIT_NAN);
-            pos.ins().f32const(canon_nan);
+        types::F32 => pos.ins().f32const(Ieee32::with_bits(CANON_32BIT_NAN)),
+        types::F64 => pos.ins().f64const(Ieee64::with_bits(CANON_64BIT_NAN)),
+        _ => {
+            // Panic if the type given was not an IEEE floating point type.
+            panic!("Could not canonicalize NaN: Unexpected result type found.");
         }
-        types::F64 => {
-            let canon_nan = Ieee64::with_bits(CANON_64BIT_NAN);
-            pos.ins().f64const(canon_nan);
-        }
-        _ => {} // FIXUP: Should this panic or throw some sort of Error?
     }
 }
