@@ -48,19 +48,18 @@ fn is_fp_arith(pos: &mut FuncCursor, inst: Inst) -> bool {
 
 /// Append a sequence of canonicalizing instructions after the given instruction.
 fn add_nan_canon_seq(pos: &mut FuncCursor, inst: Inst) {
-    // Select the instruction result, and the result type.
+    // Select the instruction result, result type. Replace the instruction
+    // result and step forward before inserting the canonicalization sequence.
     let val = pos.func.dfg.first_result(inst);
     let val_type = pos.func.dfg.value_type(val);
-
-    // Replace the instruction result and step forward one instruction.
-    let _replaced_val = pos.func.dfg.replace_result(val, val_type);
+    let replaced_val = pos.func.dfg.replace_result(val, val_type);
     let _next_inst = pos.next_inst().expect("EBB missing terminator!");
 
     // Insert a comparison instruction, to check if `inst_res` is NaN. Select
     // the canonical NaN value if `val` is NaN, assign the result to `inst`.
-    let is_nan = pos.ins().fcmp(FloatCC::NotEqual, val, val);
+    let is_nan = pos.ins().fcmp(FloatCC::NotEqual, replaced_val, replaced_val);
     let canon_nan = insert_nan_const(pos, val_type);
-    pos.ins().with_result(val).select(is_nan, canon_nan, val);
+    pos.ins().with_result(val).select(is_nan, canon_nan, replaced_val);
 
     pos.prev_inst(); // Step backwards so the pass does not skip instructions.
 }
