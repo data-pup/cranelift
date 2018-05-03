@@ -52,10 +52,19 @@ fn is_fp_arith(pos: &mut FuncCursor, inst: Inst) -> bool {
 /// Patch instructions that may result in a NaN result with operations to
 /// identify and replace NaN's with a single canonical NaN value.
 fn add_nan_canon_instrs(pos: &mut FuncCursor, inst: Inst) {
+    // -------------------------------------------------------------------------
+    // FIXUP: Call `replace_result` to replace the result of `inst`.
+    // -------------------------------------------------------------------------
+
     // Select the instruction result, result type, step forward one instruction.
     let inst_res = pos.func.dfg.first_result(inst);
     let nan_type = pos.func.dfg.value_type(inst_res);
     let _next_inst = pos.next_inst().expect("EBB missing terminator!");
+
+    // -------------------------------------------------------------------------
+    // FIXUP: Call `with_result` when inserting `select`.
+    // Note: Does this apply to fcmp as well?
+    // -------------------------------------------------------------------------
 
     // Insert a comparison instruction, to check if `inst_res` is NaN.
     // Note: IEEE 754 defines NaN such that it is not equal to itself.
