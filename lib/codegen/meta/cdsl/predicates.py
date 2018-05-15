@@ -274,8 +274,7 @@ class IsZero(FieldPredicate):
     def __init__(self, field):
         # type: (FormatFiend) -> None
         # FIXUP: Is this calling `super` correctly?
-        super(IsZero, self).__init(field, 'is_zero', ())
-
+        super(IsZero, self).__init__(field, 'is_zero', ())
 
 
 class IsSignedInt(FieldPredicate):
