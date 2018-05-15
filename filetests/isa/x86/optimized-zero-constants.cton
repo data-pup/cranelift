@@ -1,0 +1,8 @@
+test compile
+isa x86
+
+function %foo() -> f32 fast {
+ebb0:
+  v0 = f32const 0.0
+  return v0
+}
