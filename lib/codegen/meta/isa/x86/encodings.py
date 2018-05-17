@@ -204,7 +204,7 @@ X86_64.enc(base.iconst.i64, *r.pu_iq.rex(0xb8, w=1))
 # bool constants.
 enc_both(base.bconst.b1, r.pu_id_bool, 0xb8)
 
-# floating-point constants.
+# floating-point constants equal to 0.0 can be encoded using `xorps`.
 X86_32.enc(base.iconst.i32, *r.fimm_z(0xb8),
             instp=IsZero(UnaryImm.imm))
 

@@ -15,13 +15,14 @@ use ir;
 /// FIXUP: Should I also add a version of this function for f32 values?
 /// FIXUP: There is a clippy warning about 'floating point arithmetic detected'.
 #[allow(dead_code)]
-pub fn is_zero<T: Into<f64>>(x: T) -> bool {
-    let x_f64: f64 = x.into();
-    if x_f64.is_sign_positive() {
-        x_f64 == 0.0f64
-    } else {
-        x_f64 == -0.0f64
-    }
+pub fn is_zero<T: Into<ir::immediates::Imm64>>(x: T) -> bool {
+    // let x_f64: f64 = x.into();
+    // if x_f64.is_sign_positive() {
+    //     x_f64 == 0.0f64
+    // } else {
+    //     x_f64 == -0.0f64
+    // }
+    unimplemented!();
 }
 
 /// Check that `x` is the same as `y`.
