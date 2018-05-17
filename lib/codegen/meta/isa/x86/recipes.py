@@ -544,13 +544,13 @@ pu_iq = TailRecipe(
         sink.put8(imm as u64);
         ''')
 
-# XX /n Unary with floating point immediate.
-# FIXUP: ^ I am unusure about the notation above.
+# XX /n Unary with floating point immediate equal to zero.
 fimm_z = TailRecipe(
     'fimm_z', UnaryImm, size=4, ins=(), outs=FPR,
     instp=IsZero(UnaryImm.imm),
     emit='''
-        unimplemented!();
+        PUT_OP(bits, rex2(in_reg1, in_reg0), sink);
+        modrm_rr(in_reg1, in_reg0, sink);
     ''')
 
 
