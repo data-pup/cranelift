@@ -549,8 +549,8 @@ fimm_z = TailRecipe(
     'fimm_z', UnaryImm, size=4, ins=(), outs=FPR,
     instp=IsZero(UnaryImm.imm),
     emit='''
-        PUT_OP(bits, rex2(in_reg1, in_reg0), sink);
-        modrm_rr(in_reg1, in_reg0, sink);
+        PUT_OP(bits, rex2(out_reg0, out_reg0), sink);
+        modrm_rr(out_reg0, out_reg0, sink);
     ''')
 
 
