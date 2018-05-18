@@ -205,13 +205,12 @@ X86_64.enc(base.iconst.i64, *r.pu_iq.rex(0xb8, w=1))
 enc_both(base.bconst.b1, r.pu_id_bool, 0xb8)
 
 # floating-point constants equal to 0.0 can be encoded using `xorps`.
-X86_32.enc(base.iconst.i32, *r.fimm_z(0xb8),
+# X86_32.enc(base.iconst.i32, *r.fimm_z(0x57),
+#             instp=IsZero(UnaryImm.imm))
+X86_64.enc(base.f32const, *r.fimm_z(0x57),
             instp=IsZero(UnaryImm.imm))
-
-X86_64.enc(base.iconst.i32, *r.fimm_z(0xb8),
-            instp=IsZero(UnaryImm.imm))
-X86_64.enc(base.iconst.i64, *r.fimm_z(0xb8),
-            instp=IsZero(UnaryImm.imm))
+# X86_64.enc(base.iconst.i64, *r.fimm_z(0x57),
+#             instp=IsZero(UnaryImm.imm))
 
 # Shifts and rotates.
 # Note that the dynamic shift amount is only masked by 5 or 6 bits; the 8-bit
