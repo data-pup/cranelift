@@ -13,11 +13,14 @@ use ir;
 
 /// Check that `x` is zero.
 #[allow(dead_code)]
-// pub fn is_zero<T: Into<ir::immediates::Imm64>>(x: T) -> bool {
-// pub fn is_zero<T>(x: ir::immediates::Ieee32) -> bool {
-// pub fn is_zero<T: Into<u64>>(x: T) -> bool {
-// pub fn is_zero<T>(x: T) -> bool {
-pub fn is_zero<T: Into<ir::immediates::Ieee32>>(x: T) -> bool {
+pub fn is_zero_64_bit_float<T: Into<ir::immediates::Ieee64>>(x: T) -> bool {
+    let x64 = x.into();
+    (x64.bits() << 1) == 0
+}
+
+/// Check that `x` is zero.
+#[allow(dead_code)]
+pub fn is_zero_32_bit_float<T: Into<ir::immediates::Ieee32>>(x: T) -> bool {
     let x32 = x.into();
     (x32.bits() << 1) == 0
 }
