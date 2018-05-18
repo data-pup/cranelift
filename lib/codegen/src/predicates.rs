@@ -19,12 +19,7 @@ use ir;
 // pub fn is_zero<T>(x: T) -> bool {
 pub fn is_zero<T: Into<ir::immediates::Ieee32>>(x: T) -> bool {
     let x32 = x.into();
-    let bits = x32.bits();
-    if bits == 0 {
-        return true;
-    } else {
-        unimplemented!();
-    }
+    (x32.bits() << 1) == 0
 }
 
 /// Check that `x` is the same as `y`.
