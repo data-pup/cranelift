@@ -547,7 +547,7 @@ pu_iq = TailRecipe(
 
 # XX /n Unary with floating point 32-bit immediate equal to zero.
 f32imm_z = TailRecipe(
-    'f32imm_z', UnaryIeee32, size=4, ins=(), outs=FPR,
+    'f32imm_z', UnaryIeee32, size=1, ins=(), outs=FPR,
     instp=IsZero32BitFloat(UnaryIeee32.imm),
     emit='''
         PUT_OP(bits, rex2(out_reg0, out_reg0), sink);
@@ -556,7 +556,7 @@ f32imm_z = TailRecipe(
 
 # XX /n Unary with floating point 64-bit immediate equal to zero.
 f64imm_z = TailRecipe(
-    'f64imm_z', UnaryIeee64, size=8, ins=(), outs=FPR,
+    'f64imm_z', UnaryIeee64, size=1, ins=(), outs=FPR,
     instp=IsZero64BitFloat(UnaryIeee64.imm),
     emit='''
         PUT_OP(bits, rex2(out_reg0, out_reg0), sink);

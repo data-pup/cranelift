@@ -1,4 +1,5 @@
 test binemit
+set is_64bit=1
 isa x86
 
 function %foo() -> f32 fast {
