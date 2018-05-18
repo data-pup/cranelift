@@ -5,7 +5,7 @@ from __future__ import absolute_import
 from cdsl.predicates import IsUnsignedInt, IsZero, Not, And
 from base.predicates import IsColocatedFunc, IsColocatedData, LengthEquals
 from base import instructions as base
-from base.formats import UnaryImm, FuncAddr, Call, LoadComplex, StoreComplex
+from base.formats import UnaryIeee32, UnaryImm, FuncAddr, Call, LoadComplex, StoreComplex
 from .defs import X86_64, X86_32
 from . import recipes as r
 from . import settings as cfg
@@ -208,7 +208,7 @@ enc_both(base.bconst.b1, r.pu_id_bool, 0xb8)
 # X86_32.enc(base.iconst.i32, *r.fimm_z(0x57),
 #             instp=IsZero(UnaryImm.imm))
 X86_64.enc(base.f32const, *r.fimm_z(0x57),
-            instp=IsZero(UnaryImm.imm))
+            instp=IsZero(UnaryIeee32.imm))
 # X86_64.enc(base.iconst.i64, *r.fimm_z(0x57),
 #             instp=IsZero(UnaryImm.imm))
 

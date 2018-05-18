@@ -14,15 +14,17 @@ use ir;
 /// Check that `x` is zero.
 #[allow(dead_code)]
 // pub fn is_zero<T: Into<ir::immediates::Imm64>>(x: T) -> bool {
-pub fn is_zero<T>(x: T) -> bool {
-    // let x_64 = x.into();
-    // let bits = x_64.bits();
-    // if bits == 0 {
-    //     return true;
-    // } else {
-        // unimplemented!();
-    // }
-    unimplemented!();
+// pub fn is_zero<T>(x: ir::immediates::Ieee32) -> bool {
+// pub fn is_zero<T: Into<u64>>(x: T) -> bool {
+// pub fn is_zero<T>(x: T) -> bool {
+pub fn is_zero<T: Into<ir::immediates::Ieee32>>(x: T) -> bool {
+    let x32 = x.into();
+    let bits = x32.bits();
+    if bits == 0 {
+        return true;
+    } else {
+        unimplemented!();
+    }
 }
 
 /// Check that `x` is the same as `y`.
