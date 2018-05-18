@@ -12,10 +12,9 @@
 use ir;
 
 /// Check that `x` is zero.
-/// FIXUP: Should I also add a version of this function for f32 values?
-/// FIXUP: There is a clippy warning about 'floating point arithmetic detected'.
 #[allow(dead_code)]
-pub fn is_zero<T: Into<ir::immediates::Ieee64>>(x: T) -> bool {
+// pub fn is_zero<T: Into<ir::immediates::Imm64>>(x: T) -> bool {
+pub fn is_zero<T>(x: T) -> bool {
     // let x_64 = x.into();
     // let bits = x_64.bits();
     // if bits == 0 {
