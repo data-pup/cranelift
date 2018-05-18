@@ -5,7 +5,8 @@ from __future__ import absolute_import
 from cdsl.isa import EncRecipe
 from cdsl.predicates import IsSignedInt, IsEqual, IsZero, Or
 from cdsl.registers import RegClass
-from base.formats import Unary, UnaryImm, UnaryBool, Binary, BinaryImm
+from base.formats import Unary, UnaryIeee32, UnaryIeee64, UnaryImm, UnaryBool
+from base.formats import Binary, BinaryImm
 from base.formats import MultiAry, NullAry
 from base.formats import Trap, Call, CallIndirect, Store, Load
 from base.formats import IntCompare, IntCompareImm, FloatCompare
@@ -546,8 +547,8 @@ pu_iq = TailRecipe(
 
 # XX /n Unary with floating point immediate equal to zero.
 fimm_z = TailRecipe(
-    'fimm_z', UnaryImm, size=4, ins=(), outs=FPR,
-    instp=IsZero(UnaryImm.imm),
+    'fimm_z', UnaryIeee32, size=4, ins=(), outs=FPR,
+    instp=IsZero(UnaryIeee32.imm),
     emit='''
         PUT_OP(bits, rex2(out_reg0, out_reg0), sink);
         modrm_rr(out_reg0, out_reg0, sink);
