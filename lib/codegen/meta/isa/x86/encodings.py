@@ -206,8 +206,23 @@ X86_64.enc(base.iconst.i64, *r.pu_iq.rex(0xb8, w=1))
 enc_both(base.bconst.b1, r.pu_id_bool, 0xb8)
 
 # floating-point constants equal to 0.0 can be encoded using `xorps`.
+X86_32.enc(base.f32const, *r.f32imm_z.rex(0x0f, 0x57),
+            instp=IsZero32BitFloat(UnaryIeee32.imm))
+X86_32.enc(base.f32const, *r.f32imm_z(0x0f, 0x57),
+            instp=IsZero32BitFloat(UnaryIeee32.imm))
+
+X86_32.enc(base.f64const, *r.f64imm_z.rex(0x0f, 0x57),
+            instp=IsZero64BitFloat(UnaryIeee64.imm))
+X86_32.enc(base.f64const, *r.f64imm_z(0x0f, 0x57),
+            instp=IsZero64BitFloat(UnaryIeee64.imm))
+
+X86_64.enc(base.f32const, *r.f32imm_z.rex(0x0f, 0x57),
+            instp=IsZero32BitFloat(UnaryIeee32.imm))
 X86_64.enc(base.f32const, *r.f32imm_z(0x0f, 0x57),
             instp=IsZero32BitFloat(UnaryIeee32.imm))
+
+X86_64.enc(base.f64const, *r.f64imm_z.rex(0x0f, 0x57),
+            instp=IsZero64BitFloat(UnaryIeee64.imm))
 X86_64.enc(base.f64const, *r.f64imm_z(0x0f, 0x57),
             instp=IsZero64BitFloat(UnaryIeee64.imm))
 
