@@ -211,7 +211,7 @@ enc_both(base.bconst.b1, r.pu_id_bool, 0xb8)
 X86_64.enc(base.f32const, *r.f32imm_z(0x57),
             instp=IsZero32BitFloat(UnaryIeee32.imm))
 X86_64.enc(base.f64const, *r.f64imm_z(0x57),
-            instp=IsZero32BitFloat(UnaryIeee64.imm))
+            instp=IsZero64BitFloat(UnaryIeee64.imm))
 
 # Shifts and rotates.
 # Note that the dynamic shift amount is only masked by 5 or 6 bits; the 8-bit
