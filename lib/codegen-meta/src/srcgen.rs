@@ -5,7 +5,7 @@
 
 use std::collections::{BTreeMap, HashSet};
 use std::fs;
-use std::io::{self, Write};
+use std::io::Write;
 use std::path;
 
 use error;
