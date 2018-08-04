@@ -83,6 +83,10 @@ fn main() {
     if let Err(err) = meta::gen_types::generate("new_types.rs", &out_dir) {
         eprintln!("Error: {}", err);
         process::exit(1);
+    } else if let Err(err) = meta::gen_settings::generate("new_settings.rs", &out_dir) {
+        // FIXUP: These two `if let` blocks can probably be combined.
+        eprintln!("Error: {}", err);
+        process::exit(1);
     }
 }
 
