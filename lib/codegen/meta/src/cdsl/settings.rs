@@ -11,11 +11,11 @@ pub enum Setting {}
 
 impl Setting {
     /// Get the name of this setting.
-    fn name(&self) -> String {
+    fn _name(&self) -> String {
         unimplemented!();
     }
 
-    fn group(&self) -> _SettingGroup {
+    fn _group(&self) -> _SettingGroup {
         unimplemented!();
     }
 }
