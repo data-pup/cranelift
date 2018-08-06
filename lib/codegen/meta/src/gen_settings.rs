@@ -6,7 +6,39 @@
 use error;
 use srcgen;
 
-/// Generate shared settings.
+// Original Python functions and signatures.
+// ----------------------------------------------------------------
+// def gen_to_and_from_str(ty, values, fmt):
+// # type: (str, Tuple[str, ...], srcgen.Formatter) -> None
+//
+// def gen_enum_types(sgrp, fmt):
+// # type: (SettingGroup, srcgen.Formatter) -> None
+//
+// def gen_getter(setting, sgrp, fmt):
+// # type: (Setting, SettingGroup, srcgen.Formatter) -> None
+//
+// def gen_pred_getter(name, pred, sgrp, fmt):
+// # type: (str, Predicate, SettingGroup, srcgen.Formatter) -> None
+//
+// def gen_getters(sgrp, fmt):
+// # type: (SettingGroup, srcgen.Formatter) -> None
+//
+// def gen_descriptors(sgrp, fmt):
+// # type: (SettingGroup, srcgen.Formatter) -> None
+//
+// def gen_template(sgrp, fmt):
+// # type: (SettingGroup, srcgen.Formatter) -> None
+//
+// def gen_display(sgrp, fmt):
+// # type: (SettingGroup, srcgen.Formatter) -> None
+//
+// def gen_constructor(sgrp, parent, fmt):
+// # type: (SettingGroup, PredContext, srcgen.Formatter) -> None
+//
+// def gen_group(sgrp, fmt):
+// # type: (SettingGroup, srcgen.Formatter) -> None
+// ----------------------------------------------------------------
+
 pub fn generate(_filename: &str, _out_dir: &str) -> Result<(), error::Error> {
     let mut _fmt = srcgen::Formatter::new();
 
