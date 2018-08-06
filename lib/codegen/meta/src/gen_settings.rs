@@ -39,6 +39,7 @@ use srcgen;
 // # type: (SettingGroup, srcgen.Formatter) -> None
 // ----------------------------------------------------------------
 
+/// Generate shared settings.
 pub fn generate(_filename: &str, _out_dir: &str) -> Result<(), error::Error> {
     let mut _fmt = srcgen::Formatter::new();
 
