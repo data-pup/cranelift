@@ -3,6 +3,7 @@
 //! This module defines the classes that are used to define Cranelift
 //! instructions and other entitties.
 
+pub mod formats;
 pub mod predicates;
 pub mod settings;
 pub mod types;
