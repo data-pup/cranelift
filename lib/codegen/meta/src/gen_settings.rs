@@ -38,7 +38,8 @@ use srcgen;
 // ----------------------------------------------------------------
 
 /// Generate a Flags struct representing `sgrp`.
-fn gen_group(_sgrp: &cdsl::settings::_SettingGroup, _fmt: &srcgen::Formatter) {
+fn gen_group(_sgrp: &cdsl::settings::_SettingGroup, fmt: &mut srcgen::Formatter) {
+    fmt.line("#[derive(Clone)]");
     unimplemented!();
 }
 
@@ -54,7 +55,7 @@ pub fn generate(_filename: &str, _out_dir: &str) -> Result<(), error::Error> {
     // Rust Equivalent:
     // ----------------------------------------------------------------------
     let _settings = cdsl::settings::_SettingGroup::new("shared", Some("settings"));
-    gen_group(&_settings, &_fmt);
+    gen_group(&_settings, &mut _fmt);
     // ----------------------------------------------------------------------
 
     // Proposed Rust (?) This is -very- much subject to change.
