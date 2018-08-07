@@ -7,9 +7,9 @@ use std::fmt;
 /// Settings are normally not named when they are created. They get their name
 /// from the `extract_names` method.
 #[derive(Debug)]
-pub enum Setting {}
+pub enum _Setting {}
 
-impl Setting {
+impl _Setting {
     /// Get the name of this setting.
     fn _name(&self) -> String {
         unimplemented!();
@@ -20,8 +20,8 @@ impl Setting {
     }
 }
 
-impl fmt::Display for Setting {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+impl fmt::Display for _Setting {
+    fn fmt(&self, _f: &mut fmt::Formatter) -> fmt::Result {
         unimplemented!();
     }
 }
