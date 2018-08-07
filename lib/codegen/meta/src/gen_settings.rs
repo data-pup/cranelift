@@ -1,8 +1,5 @@
 //! Generate sources with settings.
 
-// Disabled import for now.
-// use base::settings;
-
 use error;
 use srcgen;
 
@@ -44,8 +41,14 @@ pub fn generate(_filename: &str, _out_dir: &str) -> Result<(), error::Error> {
     let mut _fmt = srcgen::Formatter::new();
 
     // Original Python:
+    // ----------------------------------------------------------------------
     // settings.group.qual_mod = 'settings'
     // gen_group(settings.group, fmt)
+    // ----------------------------------------------------------------------
+    // Rust Equivalent:
+    // ----------------------------------------------------------------------
+    // let _settings = base::settings::SettingGroup::new();
+    // ----------------------------------------------------------------------
 
     // Proposed Rust (?) This is -very- much subject to change.
     // let mut group = settings::group::new();

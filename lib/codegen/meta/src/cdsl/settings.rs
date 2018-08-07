@@ -7,7 +7,11 @@ use std::fmt;
 /// Settings are normally not named when they are created. They get their name
 /// from the `extract_names` method.
 #[derive(Debug)]
-pub enum _Setting {}
+pub enum _Setting {
+    Bool(_BoolSetting),
+    Num(_NumSetting),
+    Enum(_EnumSetting),
+}
 
 impl _Setting {
     /// Get the name of this setting.
@@ -25,6 +29,20 @@ impl fmt::Display for _Setting {
         unimplemented!();
     }
 }
+
+/// A named setting with a boolean on/off value.
+#[derive(Debug)]
+pub struct _BoolSetting;
+
+/// A named setting with an integral value in the range 0--255.
+#[derive(Debug)]
+pub struct _NumSetting;
+
+/// A named setting with an enumerated set of possible values.
+///
+/// The default value is always the first enumerator.
+#[derive(Debug)]
+pub struct _EnumSetting;
 
 /// A group of settings.
 ///
@@ -51,3 +69,5 @@ impl _SettingGroup {
         unimplemented!();
     }
 }
+
+pub struct _Preset;
