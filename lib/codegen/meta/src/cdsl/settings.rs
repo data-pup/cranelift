@@ -8,9 +8,9 @@ use std::fmt;
 /// from the `extract_names` method.
 #[derive(Debug)]
 pub enum _Setting {
-    Bool(_BoolSetting),
-    Num(_NumSetting),
-    Enum(_EnumSetting),
+    _Bool(_BoolSetting),
+    _Num(_NumSetting),
+    _Enum(_EnumSetting),
 }
 
 impl _Setting {
@@ -49,9 +49,24 @@ pub struct _EnumSetting;
 /// Whenever a :class:`Setting` object is created, it is added to the currently
 /// open group. A setting group must be closed explicitly before another can be
 /// opened.
-pub struct _SettingGroup;
+pub struct _SettingGroup {
+    /// Short mnemonic name for setting group.
+    _name: String,
+    /// The settings in this group.
+    _settings: Vec<_Setting>,
+    /// Fully qualified Rust module name. See gen_settings.py.
+    _qual_mod: Option<String>,
+}
 
 impl _SettingGroup {
+    pub fn new(name: &str, qual_mod: Option<&str>) -> Self {
+        Self {
+            _name: name.to_string(),
+            _settings: vec![],
+            _qual_mod: qual_mod.map(|s| s.to_string()),
+        }
+    }
+
     /// Get a short mnemonic name for setting group.
     fn _name(&self) -> String {
         unimplemented!();

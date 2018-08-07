@@ -1,5 +1,6 @@
 //! Generate sources with settings.
 
+use cdsl;
 use error;
 use srcgen;
 
@@ -47,7 +48,7 @@ pub fn generate(_filename: &str, _out_dir: &str) -> Result<(), error::Error> {
     // ----------------------------------------------------------------------
     // Rust Equivalent:
     // ----------------------------------------------------------------------
-    // let _settings = base::settings::SettingGroup::new();
+    let _settings = cdsl::settings::_SettingGroup::new("shared", Some("settings"));
     // ----------------------------------------------------------------------
 
     // Proposed Rust (?) This is -very- much subject to change.
