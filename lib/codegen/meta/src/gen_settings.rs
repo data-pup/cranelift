@@ -40,7 +40,7 @@ use srcgen;
 /// Generate a Flags struct representing `sgrp`.
 fn gen_group(sgrp: &cdsl::settings::_SettingGroup, fmt: &mut srcgen::Formatter) {
     fmt.line("#[derive(Clone)]");
-    fmt.doc_comment(format!("Flags group `{}`", sgrp.name()));
+    fmt.doc_comment(&format!("Flags group `{}`", sgrp.name()));
     unimplemented!();
 }
 
