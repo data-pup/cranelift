@@ -68,8 +68,8 @@ impl _SettingGroup {
     }
 
     /// Get a short mnemonic name for setting group.
-    fn _name(&self) -> String {
-        unimplemented!();
+    pub fn name(&self) -> &str {
+        &self._name
     }
 
     /// Open this setting group such that future new settings are added to this
