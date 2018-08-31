@@ -83,6 +83,16 @@ impl _SettingGroup {
     fn _close(&self) {
         unimplemented!();
     }
+
+    /// Compute the number of bytes required to hold all settings and
+    /// precomputed predicates.
+    ///
+    /// This is the size of the byte-sized settings plus all the numbered
+    /// predcate bits rounded up to a whole number of bytes.
+    pub fn byte_size(&self) -> u32 {
+        // self.boolean_offset + (len(self.predicate_number) + 7) / 8
+        unimplemented!();
+    }
 }
 
 pub struct _Preset;

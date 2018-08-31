@@ -41,6 +41,19 @@ use srcgen;
 fn gen_group(sgrp: &cdsl::settings::_SettingGroup, fmt: &mut srcgen::Formatter) {
     fmt.line("#[derive(Clone)]");
     fmt.doc_comment(&format!("Flags group `{}`", sgrp.name()));
+    {
+        let scope = fmt._indented(Some("pub struct Flags {"), Some("}"));
+        scope.fmt.line(&format!("bytes: [u8; {}]", sgrp.byte_size()))
+    }
+
+    // TODO:
+    // gen_constructor(sgrp, None, fmt)
+    // gen_enum_types(sgrp, fmt)
+    // gen_getters(sgrp, fmt)
+    // gen_descriptors(sgrp, fmt)
+    // gen_template(sgrp, fmt)
+    // gen_display(sgrp, fmt)
+
     unimplemented!();
 }
 

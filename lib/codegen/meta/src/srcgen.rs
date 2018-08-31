@@ -12,8 +12,8 @@ use error;
 
 static SHIFTWIDTH: usize = 4;
 
-struct _IndentedScope<'a> {
-    fmt: &'a mut Formatter,
+pub struct _IndentedScope<'a> {
+    pub fmt: &'a mut Formatter,
     after: Option<&'a str>,
 }
 
@@ -122,7 +122,7 @@ impl Formatter {
     /// Return a scope object for use with a `with` statement.
     /// The optional `before` and `after` parameters are surrounding lines
     /// which are *not* indented.
-    fn _indented<'a>(&'a mut self, before: Option<&str>, after: Option<&'a str>) -> _IndentedScope<'a> {
+    pub fn _indented<'a>(&'a mut self, before: Option<&str>, after: Option<&'a str>) -> _IndentedScope<'a> {
         _IndentedScope::_new(self, before, after)
     }
 
