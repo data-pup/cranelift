@@ -12,12 +12,21 @@ use error;
 
 static SHIFTWIDTH: usize = 4;
 
-struct _IndentedScope {
-    fmt: Formatter,
+struct _IndentedScope<'a> {
+    fmt: &'a mut Formatter,
     after: Option<String>,
 }
 
-impl _IndentedScope {
+impl<'a> _IndentedScope<'a> {
+    pub fn _new(fmt: &'a mut Formatter, before: Option<&str>, after: Option<&str>) -> Self {
+        before.map(|b| fmt.line(b));
+        fmt._indent_push();
+        Self {
+            fmt,
+            after: after.map(String::from),
+        }
+    }
+
     fn _enter(&mut self) {
         self.fmt._indent_push();
     }
@@ -106,8 +115,8 @@ impl Formatter {
     /// Return a scope object for use with a `with` statement.
     /// The optional `before` and `after` parameters are surrounding lines
     /// which are *not* indented.
-    fn _indented(&self, _before: Option<&str>, _after: Option<&str>) -> _IndentedScope {
-        unimplemented!();
+    fn _indented<'a>(&'a mut self, before: Option<&str>, after: Option<&str>) -> _IndentedScope<'a> {
+        _IndentedScope::_new(self, before, after)
     }
 
     /// Add one or more lines after stripping common indentation.
