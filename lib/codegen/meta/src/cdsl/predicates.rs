@@ -20,18 +20,29 @@
 //! For an ISA predicate, the context is the ISA settings group. For an instruction
 //! predicate, the context is the instruction format.
 
-// DEVELOPMENT NOTES: These are the imports in the original Python code.
-// from .formats import instruction_context
-// from .formats import InstructionFormat, InstructionContext, FormatField  # noqa
-// from .instructions import Instruction  # noqa
-// from .settings import BoolSetting, SettingGroup  # noqa
-// from .types import ValueType  # noqa
-// from .typevar import TypeVar  # noqa
-// PredContext = Union[SettingGroup, InstructionFormat,
-// InstructionContext]
-// PredLeaf = Union[BoolSetting, 'FieldPredicate', 'TypePredicate',
-// 'CtrlTypePredicate']
-// PredNode = Union[PredLeaf, 'Predicate']
-// # A predicate key is a (recursive) tuple of primitive types that
-// # uniquely describes a predicate. It is used for interning.
-// PredKey = Tuple[Any, ...]
+/// Superclass for all computed predicates.
+///
+/// Leaf predicates can have other types, such as `Setting`.
+///
+/// :param parts: Tuple of components in the predicate expression.
+pub enum Predicate {
+    /// Computed predicate that is true if all parts are true.
+    And,
+    /// Computed predicate that is true if any parts are true.
+    Or,
+    /// Computed predicate that is true if its single part is false.
+    Not,
+}
+
+/// An instruction predicate that performs a test on a single `FormatField`.
+///
+/// :param field: The `FormatField` to be tested.
+/// :param function: Boolean predicate function to call.
+/// :param args: Additional arguments for the predicate function.
+pub enum FieldPredicate {
+    IsEqual,
+    IsZero32BitFloat,
+    IsZero64BitFloat,
+    IsSignedInt,
+    IsUnsignedInt,
+}

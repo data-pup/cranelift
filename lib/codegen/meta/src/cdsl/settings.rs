@@ -1,5 +1,6 @@
 //! Classes for describing settings and groups of settings.
 
+use std::collections::HashMap;
 use std::fmt;
 
 /// A named setting variable that can be configured externally to Cranelift.
@@ -56,6 +57,9 @@ pub struct _SettingGroup {
     _settings: Vec<_Setting>,
     /// Fully qualified Rust module name. See gen_settings.py.
     _qual_mod: Option<String>,
+    // /// Named predicates computed from settings in this group or its parents.
+    // named_predicates: HashMap<String, Predicate>,
+
 }
 
 impl _SettingGroup {

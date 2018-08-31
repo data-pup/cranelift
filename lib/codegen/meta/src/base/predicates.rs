@@ -5,6 +5,8 @@
 // from .formats import UnaryGlobalValue, InstructionFormat
 // from cdsl.formats import InstructionFormat, FormatField
 
+use cdsl::predicates::FieldPredicate;
+
 // DEVELOPMENT NOTE: These all inherit from FieldPredicate in the original code.
 
 /// An instruction predicate that checks the referenced function is colocated.
