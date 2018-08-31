@@ -1,6 +1,6 @@
 //! Classes for describing settings and groups of settings.
 
-use std::collections::HashMap;
+// use std::collections::HashMap;
 use std::fmt;
 
 /// A named setting variable that can be configured externally to Cranelift.

@@ -1,13 +1,7 @@
 //! Cranelift predicates that consider `Function` fields.
 
-// DEVELOPMENT NOTE: These are the original imports in the Python code.
-// from cdsl.predicates import FieldPredicate
-// from .formats import UnaryGlobalValue, InstructionFormat
-// from cdsl.formats import InstructionFormat, FormatField
-
-use cdsl::predicates::FieldPredicate;
-
-// DEVELOPMENT NOTE: These all inherit from FieldPredicate in the original code.
+// FIXUP: These will be used eventually.
+// use cdsl::predicates::_FieldPredicate;
 
 /// An instruction predicate that checks the referenced function is colocated.
 struct _IsColocatedFunc;

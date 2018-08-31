@@ -1,5 +1,6 @@
 //! Classes for describing instruction operands.
 
-use cdsl::_camel_case;
-use cdsl::types::ValueType;
-use cdsl::typevar::TypeVar;
+// FIXUP: These will be used eventually.
+// use cdsl::_camel_case;
+// use cdsl::types::ValueType;
+// use cdsl::typevar::_TypeVar;

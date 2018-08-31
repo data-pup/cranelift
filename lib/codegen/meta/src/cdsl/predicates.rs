@@ -25,7 +25,7 @@
 /// Leaf predicates can have other types, such as `Setting`.
 ///
 /// :param parts: Tuple of components in the predicate expression.
-pub enum Predicate {
+pub enum _Predicate {
     /// Computed predicate that is true if all parts are true.
     And,
     /// Computed predicate that is true if any parts are true.
@@ -39,7 +39,7 @@ pub enum Predicate {
 /// :param field: The `FormatField` to be tested.
 /// :param function: Boolean predicate function to call.
 /// :param args: Additional arguments for the predicate function.
-pub enum FieldPredicate {
+pub enum _FieldPredicate {
     IsEqual,
     IsZero32BitFloat,
     IsZero64BitFloat,
