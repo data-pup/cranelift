@@ -4,12 +4,14 @@
 //! instructions and other entitties.
 
 pub mod formats;
+pub mod operands;
 pub mod predicates;
 pub mod settings;
 pub mod types;
+pub mod typevar;
 
 /// Convert the string `s` to CamelCase.
-fn _camel_case(s: &str) -> String {
+pub fn _camel_case(s: &str) -> String {
     let mut output_chars = String::with_capacity(s.len());
 
     let mut capitalize = true;
