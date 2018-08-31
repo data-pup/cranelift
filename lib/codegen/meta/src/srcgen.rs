@@ -14,16 +14,16 @@ static SHIFTWIDTH: usize = 4;
 
 struct _IndentedScope<'a> {
     fmt: &'a mut Formatter,
-    after: Option<String>,
+    after: Option<&'a str>,
 }
 
 impl<'a> _IndentedScope<'a> {
-    pub fn _new(fmt: &'a mut Formatter, before: Option<&str>, after: Option<&str>) -> Self {
+    pub fn _new(fmt: &'a mut Formatter, before: Option<&str>, after: Option<&'a str>) -> Self {
         before.map(|b| fmt.line(b));
         fmt._indent_push();
         Self {
             fmt,
-            after: after.map(String::from),
+            after,
         }
     }
 
@@ -36,6 +36,13 @@ impl<'a> _IndentedScope<'a> {
         if let Some(ref s) = self.after {
             self.fmt.line(&s);
         }
+    }
+}
+
+impl<'a> Drop for _IndentedScope<'a> {
+    fn drop(&mut self) {
+        self.fmt._indent_pop();
+        self.after.map(|a| self.fmt.line(a));
     }
 }
 
@@ -115,7 +122,7 @@ impl Formatter {
     /// Return a scope object for use with a `with` statement.
     /// The optional `before` and `after` parameters are surrounding lines
     /// which are *not* indented.
-    fn _indented<'a>(&'a mut self, before: Option<&str>, after: Option<&str>) -> _IndentedScope<'a> {
+    fn _indented<'a>(&'a mut self, before: Option<&str>, after: Option<&'a str>) -> _IndentedScope<'a> {
         _IndentedScope::_new(self, before, after)
     }
 
