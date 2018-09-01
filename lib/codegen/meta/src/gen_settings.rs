@@ -4,38 +4,47 @@ use cdsl;
 use error;
 use srcgen;
 
-// Original Python functions and signatures.
+// TODO: Function checklist w/ original signatures.
 // ----------------------------------------------------------------
-// def gen_to_and_from_str(ty, values, fmt):
+// [ ] - def gen_to_and_from_str(ty, values, fmt):
 // # type: (str, Tuple[str, ...], srcgen.Formatter) -> None
 //
-// def gen_enum_types(sgrp, fmt):
+// [ ] - def gen_enum_types(sgrp, fmt):
 // # type: (SettingGroup, srcgen.Formatter) -> None
 //
-// def gen_getter(setting, sgrp, fmt):
+// [ ] - def gen_getter(setting, sgrp, fmt):
 // # type: (Setting, SettingGroup, srcgen.Formatter) -> None
 //
-// def gen_pred_getter(name, pred, sgrp, fmt):
+// [ ] - def gen_pred_getter(name, pred, sgrp, fmt):
 // # type: (str, Predicate, SettingGroup, srcgen.Formatter) -> None
 //
-// def gen_getters(sgrp, fmt):
+// [ ] - def gen_getters(sgrp, fmt):
 // # type: (SettingGroup, srcgen.Formatter) -> None
 //
-// def gen_descriptors(sgrp, fmt):
+// [ ] - def gen_descriptors(sgrp, fmt):
 // # type: (SettingGroup, srcgen.Formatter) -> None
 //
-// def gen_template(sgrp, fmt):
+// [ ] - def gen_template(sgrp, fmt):
 // # type: (SettingGroup, srcgen.Formatter) -> None
 //
-// def gen_display(sgrp, fmt):
+// [ ] - def gen_display(sgrp, fmt):
 // # type: (SettingGroup, srcgen.Formatter) -> None
 //
-// def gen_constructor(sgrp, parent, fmt):
+// [.] - def gen_constructor(sgrp, parent, fmt):
 // # type: (SettingGroup, PredContext, srcgen.Formatter) -> None
 //
-// def gen_group(sgrp, fmt):
+// [x] - def gen_group(sgrp, fmt):
 // # type: (SettingGroup, srcgen.Formatter) -> None
 // ----------------------------------------------------------------
+
+/// Generate a Flags constructor.
+fn _gen_constructor(
+    _sgrp: &cdsl::settings::_SettingGroup,
+    _pred: (),
+    _fmt: &mut srcgen::Formatter
+) {
+    unimplemented!();
+}
 
 /// Generate a Flags struct representing `sgrp`.
 fn gen_group(sgrp: &cdsl::settings::_SettingGroup, fmt: &mut srcgen::Formatter) {
@@ -46,8 +55,10 @@ fn gen_group(sgrp: &cdsl::settings::_SettingGroup, fmt: &mut srcgen::Formatter) 
         scope.fmt.line(&format!("bytes: [u8; {}]", sgrp.byte_size()))
     }
 
+    // TODO: Implement predicate contexts.
+    _gen_constructor(sgrp, (), fmt);
+
     // TODO:
-    // gen_constructor(sgrp, None, fmt)
     // gen_enum_types(sgrp, fmt)
     // gen_getters(sgrp, fmt)
     // gen_descriptors(sgrp, fmt)
