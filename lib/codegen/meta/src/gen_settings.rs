@@ -61,21 +61,13 @@ fn gen_group(sgrp: &cdsl::settings::_SettingGroup, fmt: &mut srcgen::Formatter) 
 pub fn generate(_filename: &str, _out_dir: &str) -> Result<(), error::Error> {
     let mut _fmt = srcgen::Formatter::new();
 
-    // Original Python:
+    // Original Python: [DEVELOPMENT NOTE - FIXUP]
     // ----------------------------------------------------------------------
     // settings.group.qual_mod = 'settings'
     // gen_group(settings.group, fmt)
     // ----------------------------------------------------------------------
-    // Rust Equivalent:
-    // ----------------------------------------------------------------------
     let _settings = cdsl::settings::_SettingGroup::new("shared", Some("settings"));
     gen_group(&_settings, &mut _fmt);
-    // ----------------------------------------------------------------------
-
-    // Proposed Rust (?) This is -very- much subject to change.
-    // let mut group = settings::group::new();
-    // group.set_qual_mod("settings");
-    // gen_group(_group, fmt);
 
     // Update the file, and return a success. (This likely remains the same.)
     _fmt.update_file(_filename, _out_dir)?;
