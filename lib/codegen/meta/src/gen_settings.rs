@@ -43,6 +43,16 @@ fn _gen_constructor(
     _pred: (),
     _fmt: &mut srcgen::Formatter
 ) {
+    {
+        let impl_scope = _fmt._indented(Some("impl Flags {"), Some("}"));
+        let args = "builder: Builder";
+
+        // TODO: Find the prefix of the name.
+        // if let Some(parent) = _sgrp.parent() {
+        //     unimplemented!();
+        // }
+    }
+
     unimplemented!();
 }
 
