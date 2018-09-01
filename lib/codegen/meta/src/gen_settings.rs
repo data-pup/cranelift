@@ -54,7 +54,7 @@ fn gen_group(sgrp: &cdsl::settings::_SettingGroup, fmt: &mut srcgen::Formatter) 
     // gen_template(sgrp, fmt)
     // gen_display(sgrp, fmt)
 
-    unimplemented!();
+    // unimplemented!(); // FIXUP: Temporarily disable.
 }
 
 /// Generate shared settings.
@@ -78,8 +78,8 @@ pub fn generate(_filename: &str, _out_dir: &str) -> Result<(), error::Error> {
     // gen_group(_group, fmt);
 
     // Update the file, and return a success. (This likely remains the same.)
-    // fmt.update_file(filename, out_dir)?;
-    // Ok(())
+    _fmt.update_file(_filename, _out_dir)?;
+    Ok(())
 
-    unimplemented!(); // For now, panic, because this is unimplemented.
+    // unimplemented!(); // For now, panic, because this is unimplemented.
 }

@@ -95,7 +95,8 @@ impl _SettingGroup {
     /// predcate bits rounded up to a whole number of bytes.
     pub fn byte_size(&self) -> u32 {
         // self.boolean_offset + (len(self.predicate_number) + 7) / 8
-        unimplemented!();
+        1 // FIXUP: Temporary value.
+        // unimplemented!();
     }
 }
 
