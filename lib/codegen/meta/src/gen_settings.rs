@@ -37,6 +37,18 @@ use srcgen;
 // # type: (SettingGroup, srcgen.Formatter) -> None
 // ----------------------------------------------------------------
 
+/// Emit enum types for any enum settings.
+fn _gen_enum_types(
+    _sgrp: &cdsl::settings::_SettingGroup,
+    _fmt: &mut srcgen::Formatter
+) {
+    for _setting in _sgrp.settings() {
+        unimplemented!();
+    }
+
+    unimplemented!();
+}
+
 /// Generate a Flags constructor.
 fn _gen_constructor(
     _sgrp: &cdsl::settings::_SettingGroup,
@@ -70,9 +82,9 @@ fn gen_group(sgrp: &cdsl::settings::_SettingGroup, fmt: &mut srcgen::Formatter) 
 
     // TODO: Implement predicate contexts.
     _gen_constructor(sgrp, (), fmt);
+    _gen_enum_types(sgrp, fmt);
 
     // TODO:
-    // gen_enum_types(sgrp, fmt)
     // gen_getters(sgrp, fmt)
     // gen_descriptors(sgrp, fmt)
     // gen_template(sgrp, fmt)

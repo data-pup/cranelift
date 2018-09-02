@@ -76,6 +76,11 @@ impl _SettingGroup {
         &self._name
     }
 
+    /// Get the settings in this group.
+    pub fn settings(&self) -> &[_Setting] {
+        &self._settings
+    }
+
     /// Open this setting group such that future new settings are added to this
     /// group.
     fn _open(&self) {
