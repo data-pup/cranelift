@@ -45,15 +45,18 @@ fn _gen_constructor(
 ) {
     {
         let impl_scope = _fmt._indented(Some("impl Flags {"), Some("}"));
-        let args = "builder: Builder";
-
-        // TODO: Find the prefix of the name.
-        // if let Some(parent) = _sgrp.parent() {
-        //     unimplemented!();
-        // }
+        let _args = "builder: Builder";
+        // TODO: Find the name of the parent group, and arguments. (See meta-python.)
+        impl_scope.fmt.doc_comment(&format!("Create flags {} settings group.", _sgrp.name()));
+        impl_scope.fmt.line("#[allow(unused_variables)]");
+        {
+            let _constructor_scope = impl_scope.fmt._indented(
+                Some(&format!("pub fn new({}) -> Self {{", _args)),
+                Some("}"),
+            );
+            _constructor_scope.fmt.line("unimplemented!();");
+        }
     }
-
-    unimplemented!();
 }
 
 /// Generate a Flags struct representing `sgrp`.
