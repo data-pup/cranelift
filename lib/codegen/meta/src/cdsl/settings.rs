@@ -16,7 +16,7 @@ pub enum _Setting {
 
 impl _Setting {
     /// Get the name of this setting.
-    fn _name(&self) -> String {
+    pub fn _name(&self) -> &str {
         unimplemented!();
     }
 

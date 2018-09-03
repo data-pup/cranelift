@@ -43,10 +43,19 @@ fn _gen_enum_types(
     _fmt: &mut srcgen::Formatter
 ) {
     for _setting in _sgrp.settings() {
-        unimplemented!();
+        match _setting {
+            &cdsl::settings::_Setting::_Enum(_) => {
+                let _ty = cdsl::_camel_case(_setting._name());
+                _fmt.doc_comment(&format!("Values for {}", _setting));
+                _fmt.line("#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]");
+                {
+                    let _enum_scope = _fmt._indented(Some("pub enum {} {{"), Some("}"));
+                    _enum_scope.fmt.line("unimplemented!();");
+                }
+            }
+            _ => { }
+        }
     }
-
-    unimplemented!();
 }
 
 /// Generate a Flags constructor.
